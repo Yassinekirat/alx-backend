@@ -32,7 +32,6 @@ class Server:
 
         return self.__dataset
 
-
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """Get a page from the dataset"""
         assert isinstance(page, int) and page > 0
