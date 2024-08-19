@@ -41,8 +41,8 @@ class Server:
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """Deletion-resilient hypermedia pagination."""
-        assert isinstance(index, int) and 0 <= index < len(self.indexed_dataset()), "Invalid index"
-
+        assert isinstance(index, int), "Index must be an integer"
+        assert 0 <= index < len(self.indexed_dataset()), "Invalid index"
         indexed_data = self.indexed_dataset()
         data = []
         next_index = index
@@ -59,4 +59,4 @@ class Server:
             "next_index": next_index,
             "page_size": len(data),
             "data": data
-        }            
+        }
