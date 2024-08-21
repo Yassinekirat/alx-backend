@@ -4,6 +4,7 @@ from base_caching import BaseCaching
 
 
 class LIFOCache(BaseCaching):
+    """A caching system with LIFO eviction policy"""
     def __init__(self):
         """Initialize the cache"""
         super().__init__()
