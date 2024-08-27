@@ -26,8 +26,8 @@ def get_locale():
 @app.route('/')
 def index():
     """Basic Babel setup"""
-    return render_template("3-index.html", 
-                           home_title=_("home_title"), 
+    return render_template("3-index.html",
+                           home_title=_("home_title"),
                            home_header=_("home_header"))
 
 
