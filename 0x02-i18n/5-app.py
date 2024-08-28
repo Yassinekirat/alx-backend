@@ -1,22 +1,7 @@
 #!/usr/bin/env python3
-"""Mock logging in
-"""
-from flask import Flask, g, render_template, request
+"""Basic Flask app"""
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
-
-
-class Config:
-    """Representation of babel locale config
-    """
-    LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-
-
-app = Flask(__name__)
-app.config.from_object(Config)
-app.url_map.strict_slashes = False
-babel = Babel(app)
 
 
 users = {
@@ -27,40 +12,47 @@ users = {
 }
 
 
+class Config():
+    """Configuration class for the Flask app"""
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
+
+
+app = Flask(__name__)
+app.config.from_object(Config)
+babel = Babel(app)
+
+
+@app.route('/')
+def index():
+    """define a route and render HTML template"""
+    locale = get_locale()
+    return render_template('5-index.html', locale=locale)
+
+
 @babel.localeselector
 def get_locale():
-    """Get locale from client request
-    """
-    locale = request.args.get('locale', '')
-
-    if locale and locale in app.config['LANGUAGES']:
+    """locale from request: best language match"""
+    locale = request.args.get('locale')
+    if locale in app.config['LANGUAGES']:
         return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 def get_user():
-    """Get user by ID passed through URL
-    """
-    login_id = request.args.get("login_as")
-
-    if login_id:
-        return users.get(int(login_id))
+    """retrieve a user or None if not found"""
+    user_id = request.args.get('login_as')
+    if user_id and user_id.isdigit():
+        return users.get(int(user_id))
     return None
 
 
 @app.before_request
 def before_request():
-    """Run before request
-    """
+    """set user as a global variable before each request"""
     g.user = get_user()
 
 
-@app.route('/')
-def login():
-    """Say hello world
-    """
-    return render_template('5-index.html')
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+if __name__ == '__main__':
+    app.run(debug=True)
